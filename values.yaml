@@ -1,0 +1,46 @@
+# Number of replicas
+replicaCount: 2
+
+# Container image settings
+image:
+  repository: hashicorp/http-echo
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Service configuration
+service:
+  type: LoadBalancer       # GCE External LoadBalancer
+  port: 80                 # Service port exposed externally
+  targetPort: 8080         # Port your container listens on
+
+# Optional ingress configuration (GCE Ingress)
+ingress:
+  enabled: false           # Set to true if you want GCE Ingress
+  annotations: {}
+  hosts:
+    - host: example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Resources (CPU/memory limits)
+resources: {}
+
+# Node selector, tolerations, affinity (optional)
+nodeSelector: {}
+tolerations: []
+affinity: []
+
+# Readiness/Liveness probe settings
+readinessProbe:
+  path: /
+  port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+livenessProbe:
+  path: /
+  port: 8080
+  initialDelaySeconds: 15
+  periodSeconds: 20
