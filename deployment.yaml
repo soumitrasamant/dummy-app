@@ -1,36 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "dummy-app.fullname" . }}
-  labels:
-    app: {{ include "dummy-app.name" . }}
+  name: test-app
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      app: {{ include "dummy-app.name" . }}
+      app: test-app
   template:
     metadata:
       labels:
-        app: {{ include "dummy-app.name" . }}
+        app: test-app
     spec:
       containers:
-        - name: dummy-app
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: test-app
+          image: hashicorp/http-echo:latest
           args:
-            - "-text=Hello from GCE LoadBalancer"
+            - "-text=Hello from GCE LB"
           ports:
-            - containerPort: {{ .Values.service.targetPort }}
+            - containerPort: 5678
           readinessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.targetPort }}
+              port: 5678
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.targetPort }}
+              port: 5678
             initialDelaySeconds: 15
             periodSeconds: 20
